@@ -10,8 +10,8 @@
         "imports": {
             "react": "https://esm.sh/react@18.2.0",
             "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-            "platform-icon-library": "https://unpkg.com/platform-icon-library@1.0.0/dist/index.mjs" 
-        } 
+            "platform-icon-library": "https://unpkg.com/platform-icon-library@1.0.0/dist/index.mjs"
+        }
     }
     </script>
     <style>
@@ -23,6 +23,8 @@
         .control-group { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
         .control-group label { font-weight: bold; font-size: 14px; }
         .control-group input[type="range"] { width: 150px; }
+        select { font-size: 16px; padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; }
+        button.copy-btn { font-size: 14px; padding: 5px 12px; border-radius: 5px; border: none; background: #e0e0e0; margin-left: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -31,22 +33,44 @@
     <script type="text/babel" data-type="module">
         import React, { useState } from 'react';
         import ReactDOM from 'react-dom/client';
-        import { CameraLightNormal, AccountLightNormal } from 'platform-icon-library';
+        import * as Icons from 'platform-icon-library';
+
+        // 아이콘 이름 전체 동적 추출
+        const iconNames = Object.keys(Icons);
 
         function App() {
+            // 첫 번째 아이콘 기본 선택
+            const [selectedIcon, setSelectedIcon] = useState(iconNames[0]);
             const [iconColor, setIconColor] = useState('#3498db');
             const [iconSize, setIconSize] = useState(90);
 
+            const IconComponent = Icons[selectedIcon];
+
+            // 클립보드 복사 함수
+            const handleCopy = () => {
+                navigator.clipboard.writeText(selectedIcon);
+                // 선택: 알림
+                alert(`클립보드에 복사됨: ${selectedIcon}`);
+            };
+
             return (
                 <div className="container">
-                    <h1>🎉 아이콘 GUI 컨트롤 🎉</h1>
-                    <p>아래 컨트롤을 움직여 아이콘의 크기와 색상을 실시간으로 조절해보세요.</p>
-                    
-                    <div className="icon-wrapper">
-                        <CameraLightNormal color={iconColor} size={iconSize} />
-                        <AccountLightNormal color={iconColor} size={iconSize} />
+                    <h1>🎉 아이콘 전체 자동 추출/복사 🎉</h1>
+                    <div style={{margin: "1.5rem 0"}}>
+                        <label style={{fontWeight: 'bold', marginRight: 10}}>아이콘 이름 선택</label>
+                        <select
+                            value={selectedIcon}
+                            onChange={e => setSelectedIcon(e.target.value)}
+                        >
+                            {iconNames.map(name => (
+                                <option key={name} value={name}>{name}</option>
+                            ))}
+                        </select>
+                        <button className="copy-btn" onClick={handleCopy}>복사</button>
                     </div>
-
+                    <div className="icon-wrapper">
+                        {IconComponent && <IconComponent color={iconColor} size={iconSize} />}
+                    </div>
                     <div className="controls">
                         <div className="control-group">
                             <label htmlFor="size-slider">크기 (Size): {iconSize}px</label>
@@ -56,18 +80,17 @@
                                 min="16"
                                 max="200"
                                 value={iconSize}
-                                // [수정된 부분] e.target.value를 숫자로 변환합니다.
-                                onChange={(e) => setIconSize(Number(e.target.value))}
+                                onChange={e => setIconSize(Number(e.target.value))}
                             />
                         </div>
                         <div className="control-group">
-                             <label htmlFor="color-picker">색상 (Color)</label>
-                             <input 
+                            <label htmlFor="color-picker">색상 (Color)</label>
+                            <input 
                                 type="color"
                                 id="color-picker"
                                 value={iconColor}
-                                onChange={(e) => setIconColor(e.target.value)}
-                             />
+                                onChange={e => setIconColor(e.target.value)}
+                            />
                         </div>
                     </div>
                 </div>
