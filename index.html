@@ -64,10 +64,19 @@
         const [currentPage, setCurrentPage] = useState(1);
         const itemsPerPage = 30;
 
+        const cdnUrl = "https://unpkg.com/platform-icon-library@1.0.0/dist/index.mjs";
+        const [copiedCdn, setCopiedCdn] = useState(false);
+
         const handleCopy = (iconName) => {
             navigator.clipboard.writeText(iconName);
             setCopiedName(iconName);
             setTimeout(() => setCopiedName(''), 1000);
+        };
+
+        const handleCopyCdn = () => {
+            navigator.clipboard.writeText(cdnUrl);
+            setCopiedCdn(true);
+            setTimeout(() => setCopiedCdn(false), 1000);
         };
 
         useEffect(() => {
@@ -106,6 +115,40 @@
 
         return (
             <div>
+                <div
+                    className="mb-6 flex flex-col sm:flex-row sm:items-center gap-2 bg-blue-50 border border-blue-200 rounded-md p-3 cursor-pointer select-none max-w-full"
+                    onClick={handleCopyCdn}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleCopyCdn();
+                        }
+                    }}
+                    aria-label="CDN import URL 복사"
+                >
+                    <input
+                        type="text"
+                        readOnly
+                        value={cdnUrl}
+                        className="flex-grow bg-blue-50 border border-blue-200 rounded-md px-3 py-1 text-sm text-blue-900 font-mono truncate cursor-pointer"
+                        aria-readonly="true"
+                        tabIndex={-1}
+                    />
+                    <button
+                        type="button"
+                        onClick={e => {
+                            e.stopPropagation();
+                            handleCopyCdn();
+                        }}
+                        className="flex-shrink-0 p-1"
+                        aria-label="CDN URL 복사"
+                    >
+                        {copiedCdn ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-blue-600" />}
+                    </button>
+                </div>
+
                 <h1 className="text-2xl font-semibold text-primary border-b border-border pb-2 mb-6 select-none">BlackVue/FLEETA 아이콘 라이브러리</h1>
 
                 <form className="flex justify-center mb-6 gap-2" onSubmit={e => e.preventDefault()}>
