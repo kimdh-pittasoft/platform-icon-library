@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Icon Library - GUI Test</title>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="importmap">
@@ -15,162 +15,23 @@
         }
     }
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 2rem; background-color: #f4f7f9; text-align: center; }
-    .container { max-width: 1140px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-    h1 { border-bottom: 2px solid #eee; padding-bottom: 1rem; }
-    .icon-list-container {
-        margin: 2rem auto 0 auto;
-        max-width: 1140px;
-    }
-    .icon-group {
-        text-align: left;
-        margin-bottom: 2.5rem;
-    }
-    .icon-group-title {
-        font-size: 1.07rem;
-        font-weight: normal;
-        color: #2674be;
-        margin: 0.8rem 0 0.2rem 0;
-        border-bottom: 1.5px solid #e0e0e0;
-        padding-bottom: 2px;
-        width: 100%;
-        text-align: left;
-    }
-    .subgroup-heading {
-        font-weight: normal;
-        color: #888;
-        font-size: 15px;
-        margin: 0.5rem 0 0.3rem 0;
-    }
-    .icon-list {
-        max-height: none;
-        overflow: visible;
-        border: none;
-        background: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.2rem 1.2rem;
-    }
-    .icon-list-item {
-        width: 240px;
-        display: flex;
-        align-items: center;
-        gap: 1.1rem;
-        padding: 0.5rem 0;
-        border-bottom: none;
-        font-size: 17px;
-        background: none;
-    }
-    .icon-list-icon {
-        min-width: 32px;
-        min-height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .icon-list-name {
-        flex: 1;
-        text-align: left;
-        font-family: "Menlo", "Monaco", monospace;
-        font-size: 16px;
-        color: #2d3a4a;
-        user-select: all;
-        white-space: normal;
-        overflow-x: visible;
-        word-break: break-word;
-        /* Remove overflow hidden or truncation */
-    }
-    .icon-list-copy-btn {
-        font-size: 18px;
-        padding: 3px 8px;
-        border-radius: 5px;
-        border: none;
-        background: none;
-        margin-left: 8px;
-        cursor: pointer;
-        transition: background 0.15s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .icon-list-copy-btn:active {
-        background: #b2d2f5;
-    }
-    @media (max-width: 750px) {
-        .container, .icon-list-container {
-            max-width: 95vw;
-            padding: 1rem;
-        }
-        .icon-list-item {
-            width: 100%;
-        }
-    }
-    .search-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 1rem;
-        gap: 0.5rem;
-    }
-    .search-input {
-        width: 300px;
-        padding: 0.5rem 0.75rem;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-    .search-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-    }
-    .pagination button {
-        background: #2674be;
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background 0.2s;
-    }
-    .pagination button:disabled {
-        background: #a0a0a0;
-        cursor: not-allowed;
-    }
-    .pagination .page-info {
-        font-size: 1rem;
-        color: #2674be;
-        user-select: none;
-    }
-    @media (max-width: 400px) {
-        .pagination {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .pagination button {
-            width: 100%;
-            padding: 0.75rem 0;
-        }
-    }
+      /* Custom colors for shadcn style */
+      :root {
+        --background: #fff;
+        --primary: #2674be;
+        --border: #e0e0e0;
+        --muted-foreground: #888;
+      }
+      .bg-background { background-color: var(--background); }
+      .text-primary { color: var(--primary); }
+      .border-border { border-color: var(--border); }
+      .text-muted-foreground { color: var(--muted-foreground); }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="bg-gray-50 flex justify-center p-2 sm:p-8 min-h-screen">
+    <div id="root" class="w-full max-w-full sm:max-w-[1440px] bg-background rounded-xl shadow border border-border px-3 sm:px-8 py-6"></div>
 
     <script type="text/babel" data-type="module">
     import React, { useState, useEffect, useMemo } from 'react';
@@ -178,12 +39,9 @@
     import * as Icons from 'platform-icon-library';
     import { Copy, Check, Search } from 'lucide-react';
 
-    // 아이콘 이름을 첫 단어(대문자 기준)로 분리하여 그룹화 및 Light/Dark/Other로 서브그룹화
     function groupIconsByType(iconNames) {
-        // { Camera: { Light: [...], Dark: [...], Other: [...] }, ... }
         const groups = {};
         iconNames.forEach(name => {
-            // Split at capital letter boundaries
             const words = name.match(/[A-Z][a-z0-9]*/g) || [name];
             const firstWord = words[0] || name;
             let mode = 'Other';
@@ -212,12 +70,10 @@
             setTimeout(() => setCopiedName(''), 1000);
         };
 
-        // When searchTerm changes, reset page to 1
         useEffect(() => {
             setCurrentPage(1);
         }, [searchTerm]);
 
-        // Flatten grouped icons into a list of {group, mode, name, Icon}
         const flattenedIcons = useMemo(() => {
             const lowerSearch = searchTerm.toLowerCase();
             const list = [];
@@ -237,7 +93,6 @@
         const totalPages = Math.ceil(flattenedIcons.length / itemsPerPage);
         const currentPageItems = flattenedIcons.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-        // Group current page items by group and mode for rendering
         const pagedGrouped = useMemo(() => {
             const result = {};
             currentPageItems.forEach(({ group, mode, name, Icon }) => {
@@ -250,81 +105,137 @@
         const hasResults = flattenedIcons.length > 0;
 
         return (
-            <div className="container">
-                <h1>BlackVue/FLEETA 아이콘 라이브러리</h1>
-                <div className="search-container">
+            <div>
+                <h1 className="text-2xl font-semibold text-primary border-b border-border pb-2 mb-6 select-none">BlackVue/FLEETA 아이콘 라이브러리</h1>
+
+                <form className="flex justify-center mb-6 gap-2" onSubmit={e => e.preventDefault()}>
                     <input
                         type="search"
-                        className="search-input"
+                        className="input input-md w-72"
                         placeholder="아이콘 이름 검색"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                         aria-label="아이콘 이름 검색"
+                        autoComplete="off"
                     />
-                    <button className="search-button" aria-label="검색 아이콘">
-                        <Search size={24} color="#2674be" />
+                    <button type="submit" className="btn btn-square btn-outline" aria-label="검색 아이콘">
+                        <Search size={20} />
                     </button>
-                </div>
-                <div className="icon-list-container">
+                </form>
+
+                <div>
                     {hasResults ? (
                         Object.entries(pagedGrouped).map(([group, subgroups]) => (
-                            <div className="icon-group" key={group}>
-                                <div className="icon-group-title">{group}</div>
-                                {/* Render subgroups: Light, Dark, Other */}
-                                {['Light', 'Dark', 'Other'].map(mode => (
-                                    subgroups[mode].length > 0 && (
-                                        <div key={mode}>
-                                            <div className="subgroup-heading">
+                            <section key={group} className="mb-8">
+                                <h2 className="text-lg font-medium text-primary border-b border-border pb-1 mb-2 select-none">{group}</h2>
+                                {['Light', 'Dark', 'Other'].map(mode =>
+                                    subgroups[mode].length > 0 ? (
+                                        <div key={mode} className="mb-4">
+                                            <h3 className="text-sm text-muted-foreground mb-1 select-none">
                                                 {mode === 'Light' && 'Light 모드'}
                                                 {mode === 'Dark' && 'Dark 모드'}
                                                 {mode === 'Other' && '기타'}
-                                            </div>
-                                            <ul className="icon-list">
-                                                {subgroups[mode].map(({name, Icon}) => (
-                                                    <li className="icon-list-item" key={name}>
-                                                        <span className="icon-list-icon">
-                                                            {Icon && <Icon size={32} width={32} height={32} color="#3498db" />}
+                                            </h3>
+                                            <ul
+                                                className="
+                                                    grid
+                                                    grid-cols-1
+                                                    sm:grid-cols-2
+                                                    lg:grid-cols-3
+                                                    gap-3
+                                                    mb-0
+                                                    p-0
+                                                    list-none
+                                                    min-w-0 max-w-full overflow-hidden
+                                                "
+                                            >
+                                                {subgroups[mode].map(({ name, Icon }) => (
+                                                    <li
+                                                        key={name}
+                                                        className="
+                                                            flex flex-col sm:flex-row sm:items-center
+                                                            gap-1 sm:gap-3
+                                                            bg-white
+                                                            rounded-lg
+                                                            shadow-sm
+                                                            border border-border
+                                                            px-2 sm:px-3 py-2
+                                                            focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2
+                                                            transition
+                                                            min-w-0 max-w-full overflow-hidden
+                                                            cursor-pointer
+                                                            hover:bg-gray-100 active:bg-gray-100
+                                                        "
+                                                        tabIndex={0}
+                                                        role="button"
+                                                        aria-label={`${name} 아이콘 이름 복사`}
+                                                        onClick={() => handleCopy(name)}
+                                                        onKeyDown={e => {
+                                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                                e.preventDefault();
+                                                                handleCopy(name);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <span className="flex items-center gap-2 min-w-0 max-w-full overflow-hidden">
+                                                            <span className="min-w-[32px] min-h-[32px] flex items-center justify-center text-primary flex-shrink-0">
+                                                                {Icon && <Icon size={32} width={32} height={32} />}
+                                                            </span>
+                                                            <span className="font-mono text-base text-gray-900 select-all break-words max-w-full whitespace-pre-line min-w-0 overflow-hidden">
+                                                                {name}
+                                                            </span>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-ghost btn-square p-1 ml-1 flex-shrink-0"
+                                                                title="Copy icon name"
+                                                                tabIndex={-1}
+                                                                onClick={e => {
+                                                                    e.stopPropagation();
+                                                                    handleCopy(name);
+                                                                }}
+                                                            >
+                                                                {copiedName === name ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-gray-500" />}
+                                                            </button>
                                                         </span>
-                                                        <span className="icon-list-name">{name}</span>
-                                                        <button
-                                                            className="icon-list-copy-btn"
-                                                            title="Copy icon name"
-                                                            onClick={() => handleCopy(name)}
-                                                        >
-                                                            {copiedName === name ? <Check size={20} color="green" /> : <Copy size={20} color="gray" />}
-                                                        </button>
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
-                                    )
-                                ))}
-                            </div>
+                                    ) : null
+                                )}
+                            </section>
                         ))
                     ) : (
-                        <p>검색 결과가 없습니다.</p>
+                        <p className="text-center text-muted-foreground select-none">검색 결과가 없습니다.</p>
                     )}
                 </div>
+
                 {hasResults && (
-                    <div className="pagination" role="navigation" aria-label="페이지 네비게이션">
+                    <nav className="flex flex-wrap justify-center items-center gap-4 mt-6" aria-label="페이지 네비게이션">
                         <button
                             onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
                             disabled={currentPage === 1}
                             aria-label="이전 페이지"
+                            className="btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Prev
                         </button>
-                        <span className="page-info" aria-live="polite" aria-atomic="true">
+                        <span
+                            className="text-primary font-medium select-none"
+                            aria-live="polite"
+                            aria-atomic="true"
+                        >
                             {currentPage} / {totalPages}
                         </span>
                         <button
                             onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
                             disabled={currentPage === totalPages}
                             aria-label="다음 페이지"
+                            className="btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Next
                         </button>
-                    </div>
+                    </nav>
                 )}
             </div>
         );
@@ -333,6 +244,6 @@
     const rootElement = document.getElementById('root');
     const root = ReactDOM.createRoot(rootElement);
     root.render(<App />);
-</script>
+    </script>
 </body>
 </html>
