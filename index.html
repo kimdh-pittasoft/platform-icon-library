@@ -135,11 +135,11 @@
         <pre style="background:#f4f4f4;padding:10px;border-radius:6px;overflow-x:auto;">npm install platform-icon-library</pre>
         <h2>💡 사용 예제</h2>
         <pre style="background:#f4f4f4;padding:10px;border-radius:6px;overflow-x:auto;">
-import { AccountLightActive } from 'platform-icon-library';
+import { Account } from 'platform-icon-library';
 import React from 'react';
 
 export default function Example() {
-  return &lt;AccountLightActive size={48} color="#2563eb" strokeWidth={1.5} title="Account" /&gt;;
+  return &lt;Account size={48} color="#2563eb" strokeWidth={1.5} title="Account" /&gt;;
 }
         </pre>
     </section>
@@ -167,55 +167,34 @@ export default function Example() {
             );
         }
 
-        function Card({ name, Component, onCopy, mode, resetTick }) {
+        function Card({ name, Component, onCopy, size, color }) {
             const isDark = name.toLowerCase().includes('dark');
             const isLight = name.toLowerCase().includes('light');
             let platform = null;
             if (ANDROID_NAMES.has(name)) platform = 'android';
             else if (IOS_NAMES.has(name)) platform = 'ios';
 
-            // Patch 1: isFixed always false
-            const isFixed = false;
-
-            // Patch 2: default states
-            const [iconSize, setIconSize] = React.useState(32);
-            const [iconColor, setIconColor] = React.useState('#0095E0');
-
-            // Patch 3: new useEffect block for reset
-            React.useEffect(() => {
-                // Reset to defaults when mode changes or Reset pressed
-                setIconSize(32);
-                if (mode === 'BlackVue') setIconColor('#0095E0');
-                else if (mode === 'FLEETA') setIconColor('#61007d');
-                else setIconColor('#6e6e68');
-            }, [mode, resetTick]);
-
-            // Patch 4: effectiveColor is just iconColor
-            const effectiveColor = iconColor;
-
-            // Patch 5: snippet definition
-            const snippet = `<${name} size={${iconSize}} color="${iconColor}" strokeWidth={1.5} />`;
-
             const containerRef = React.useRef(null);
+            const effectiveColor = color;
+            const snippet = `<${name} size={${size}} color="${color}" strokeWidth={1.5} />`;
 
             return React.createElement(
                 'div',
                 { className: 'group rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md flex flex-col items-center' },
                 platform === 'android' && React.createElement('div', { className: 'badge android absolute top-2 left-2 rounded-full px-2 py-0.5 text-xs font-semibold' }, 'Android'),
                 platform === 'ios' && React.createElement('div', { className: 'badge ios absolute top-2 left-2 rounded-full px-2 py-0.5 text-xs font-semibold' }, 'iOS'),
-                // Removed Fixed badge
                 React.createElement(
                     'div',
                     {
                         className: 'animation-container flex items-center justify-center rounded-md border border-gray-100',
                         ref: containerRef,
                         style: {
-                            width: iconSize,
-                            height: iconSize,
+                            width: size,
+                            height: size,
                             backgroundColor: isDark ? '#121216' : (isLight ? '#ffffff' : undefined)
                         }
                     },
-                    React.createElement(Component, { size: iconSize, color: effectiveColor, strokeWidth: 1.5 })
+                    React.createElement(Component, { size: size, color: effectiveColor, strokeWidth: 1.5 })
                 ),
                 React.createElement(
                     'div',
@@ -234,73 +213,84 @@ export default function Example() {
                     name
                 ),
                 React.createElement(
-                    'div',
-                    { style: { marginTop: '8px', display: 'flex', gap: '8px', justifyContent: 'center', width: '100%' } },
-                    // Size label with range input and value display
-                    React.createElement(
-                        'label',
-                        { style: { fontSize: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1' } },
-                        'Size',
-                        React.createElement('input', {
-                            type: 'range',
-                            value: iconSize,
-                            min: 16,
-                            max: 128,
-                            step: 4,
-                            onChange: e => setIconSize(Number(e.target.value)),
-                            style: { marginTop: '4px' },
-                            className: 'w-full'
-                        }),
-                        React.createElement('input', {
-                            type: 'number',
-                            value: iconSize,
-                            min: 16,
-                            max: 128,
-                            step: 4,
-                            onChange: e => setIconSize(Math.max(16, Math.min(128, Number(e.target.value)))) ,
-                            style: { marginTop: '4px', textAlign: 'center' },
-                            className: 'w-20 rounded-md border border-gray-300 px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        }),
-                    ),
-                    React.createElement(
-                        'label',
-                        { style: { fontSize: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '1' } },
-                        'Color',
-                        React.createElement('input', {
-                            type: 'color',
-                            value: iconColor,
-                            onChange: e => setIconColor(e.target.value),
-                            // Patch 6: Remove disabled and always opacity 1
-                            style: { width: '60px', height: '28px', padding: '0', border: 'none', marginTop: '4px', cursor: 'pointer', opacity: 1 },
-                            className: 'rounded border border-gray-300'
-                        }),
-                        React.createElement('button', {
-                            onClick: () => {
-                                const el = containerRef.current && containerRef.current.querySelector('svg');
-                                if (!el) return;
-                                const clone = el.cloneNode(true);
-                                // ensure xmlns and size
-                                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                                clone.setAttribute('width', String(iconSize));
-                                clone.setAttribute('height', String(iconSize));
-                                // color is already applied via props; ensure strokeWidth
-                                clone.setAttribute('stroke-width', String(1.5));
-                                const serialized = new XMLSerializer().serializeToString(clone);
-                                const blob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `${name}-${iconSize}.svg`;
-                                document.body.appendChild(a);
-                                a.click();
-                                a.remove();
-                                URL.revokeObjectURL(url);
-                            },
-                            className: 'inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50',
-                            title: '다운로드',
-                            'aria-label': 'SVG 다운로드'
-                        }, 'SVG')
-                    )
+                  'div',
+                  { style: { marginTop: '8px', display: 'flex', gap: '8px', justifyContent: 'center', width: '100%' } },
+                  // SVG download
+                  React.createElement('button', {
+                    onClick: () => {
+                      const el = containerRef.current && containerRef.current.querySelector('svg');
+                      if (!el) return;
+                      const clone = el.cloneNode(true);
+                      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                      clone.setAttribute('width', String(size));
+                      clone.setAttribute('height', String(size));
+                      clone.setAttribute('stroke-width', String(1.5));
+                      const serialized = new XMLSerializer().serializeToString(clone);
+                      const blob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${name}-${size}.svg`;
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      URL.revokeObjectURL(url);
+                    },
+                    className: 'inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50',
+                    title: 'SVG 다운로드',
+                    'aria-label': 'SVG 다운로드'
+                  }, 'SVG'),
+                  // PNG download
+                  React.createElement('button', {
+                    onClick: async () => {
+                      const el = containerRef.current && containerRef.current.querySelector('svg');
+                      if (!el) return;
+                      const clone = el.cloneNode(true);
+                      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                      clone.setAttribute('width', String(size));
+                      clone.setAttribute('height', String(size));
+                      clone.setAttribute('stroke-width', String(1.5));
+                      const serialized = new XMLSerializer().serializeToString(clone);
+                      const svgBlob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
+                      const svgUrl = URL.createObjectURL(svgBlob);
+
+                      const img = new Image();
+                      img.crossOrigin = 'anonymous';
+                      const loadImage = () => new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = svgUrl;
+                      });
+                      try {
+                        await loadImage();
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) return;
+                        ctx.clearRect(0, 0, size, size);
+                        ctx.drawImage(img, 0, 0, size, size);
+                        canvas.toBlob((blob) => {
+                          if (!blob) return;
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${name}-${size}.png`;
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                          URL.revokeObjectURL(svgUrl);
+                        }, 'image/png');
+                      } catch (e) {
+                        console.error('PNG export failed', e);
+                        URL.revokeObjectURL(svgUrl);
+                      }
+                    },
+                    className: 'inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50',
+                    title: 'PNG 다운로드',
+                    'aria-label': 'PNG 다운로드'
+                  }, 'PNG')
                 )
             );
         }
@@ -312,6 +302,15 @@ export default function Example() {
             const [toastMessage, setToastMessage] = React.useState('');
             const [mode, setMode] = React.useState('BlackVue');
             const [resetTick, setResetTick] = React.useState(0);
+            const [iconSize, setIconSize] = React.useState(32);
+            const [iconColor, setIconColor] = React.useState('#0095E0');
+
+            React.useEffect(() => {
+              setIconSize(48);
+              if (mode === 'BlackVue') setIconColor('#0095E0');
+              else if (mode === 'FLEETA') setIconColor('#61007d');
+              else setIconColor('#6e6e68');
+            }, [mode, resetTick]);
 
             const filteredNames = React.useMemo(() => {
                 const lowerSearch = searchTerm.toLowerCase();
@@ -335,7 +334,6 @@ export default function Example() {
                 { className: 'mx-auto max-w-5xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm' },
                 React.createElement('h1', { className: 'mb-4 border-b border-gray-100 pb-4 text-center text-2xl font-semibold' }, 'Platform Icon Library'),
                 React.createElement('div', { style: { display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '12px' } },
-                  // Removed Mode: label
                   React.createElement('button', {
                     onClick: () => setMode('BlackVue'),
                     className: 'inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50',
@@ -357,10 +355,32 @@ export default function Example() {
                     style: { background: '#fff', cursor: 'pointer' }
                   }, 'Reset')
                 ),
+                React.createElement('div', { style: { display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '16px' } },
+                  React.createElement('label', { className: 'flex items-center gap-2 text-sm' },
+                    'Size',
+                    React.createElement('input', {
+                      type: 'range', value: iconSize, min: 16, max: 128, step: 4,
+                      onChange: e => setIconSize(Number(e.target.value)), className: 'w-56'
+                    }),
+                    React.createElement('input', {
+                      type: 'number', value: iconSize, min: 16, max: 128, step: 4,
+                      onChange: e => setIconSize(Math.max(16, Math.min(128, Number(e.target.value)))),
+                      className: 'w-20 rounded-md border border-gray-300 px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    })
+                  ),
+                  React.createElement('label', { className: 'flex items-center gap-2 text-sm' },
+                    'Color',
+                    React.createElement('input', {
+                      type: 'color', value: iconColor,
+                      onChange: e => setIconColor(e.target.value),
+                      className: 'rounded border border-gray-300 w-10 h-8'
+                    })
+                  )
+                ),
                 React.createElement('input', {
                     type: 'search',
                     className: 'mb-8 block w-full max-w-md mx-auto rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500',
-                    placeholder: '애니메이션 이름 검색...',
+                    placeholder: '아이콘 이름 검색...',
                     value: searchTerm,
                     onChange: e => setSearchTerm(e.target.value),
                     'aria-label': '애니메이션 이름 검색'
@@ -370,7 +390,7 @@ export default function Example() {
                     { className: 'grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6' },
                     filteredNames.map(name => {
                         const Component = AllIcons[name];
-                        return React.createElement(Card, { key: name, name, Component, onCopy: handleCopy, mode, resetTick });
+                        return React.createElement(Card, { key: name, name, Component, onCopy: handleCopy, size: iconSize, color: iconColor });
                     })
                 ),
                 React.createElement(Toast, { message: toastMessage, show: toastVisible })
@@ -378,7 +398,7 @@ export default function Example() {
         }
 
         const rootElement = document.getElementById('root');
-        const root = ReactDOM.createRoot(rootElement);
+        const root = ReactDOM.createRoot(rootElement);  
         root.render(React.createElement(App));
     </script>
 </body>
