@@ -36,3 +36,7 @@ dist-ssr
 # Supabase
 .branches
 .temp
+
+node_modules/
+dist/
+.vscode/
