@@ -296,7 +296,29 @@ export default function Example() {
         }
 
         function App() {
-            const allNames = React.useMemo(() => Object.keys(AllIcons), []);
+            // 디버깅: 패키지 로드 상태 확인
+            React.useEffect(() => {
+                console.log('=== 패키지 디버깅 ===');
+                console.log('AllIcons 객체:', AllIcons);
+                console.log('AllIcons 타입:', typeof AllIcons);
+                console.log('AllIcons 키들:', Object.keys(AllIcons));
+                console.log('첫 번째 컴포넌트 예제:', Object.keys(AllIcons)[0], AllIcons[Object.keys(AllIcons)[0]]);
+                
+                // default export 확인
+                if (AllIcons.default) {
+                    console.log('default export 발견:', AllIcons.default);
+                    console.log('default export 키들:', Object.keys(AllIcons.default));
+                }
+            }, []);
+
+            const allNames = React.useMemo(() => {
+                // default export가 있는 경우 처리
+                const icons = AllIcons.default || AllIcons;
+                const keys = Object.keys(icons);
+                console.log('사용할 아이콘 키들:', keys);
+                return keys;
+            }, []);
+            
             const [searchTerm, setSearchTerm] = React.useState('');
             const [toastVisible, setToastVisible] = React.useState(false);
             const [toastMessage, setToastMessage] = React.useState('');
@@ -389,9 +411,17 @@ export default function Example() {
                     'div',
                     { className: 'grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6' },
                     filteredNames.map(name => {
-                        const Component = AllIcons[name];
+                        const icons = AllIcons.default || AllIcons;
+                        const Component = icons[name];
+                        
+                        // 컴포넌트가 없는 경우 건너뛰기
+                        if (!Component) {
+                            console.warn(`컴포넌트를 찾을 수 없습니다: ${name}`);
+                            return null;
+                        }
+                        
                         return React.createElement(Card, { key: name, name, Component, onCopy: handleCopy, size: iconSize, color: iconColor });
-                    })
+                    }).filter(Boolean)
                 ),
                 React.createElement(Toast, { message: toastMessage, show: toastVisible })
             );
